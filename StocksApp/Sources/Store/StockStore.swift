@@ -41,7 +41,18 @@ private extension StockStore {
                     return $0.symbol < $1.symbol // tie breaker
                 }
             }
-        case .change: return { _,_ in false }
+            
+        case .change:
+            return {
+                let lhsAbs = abs($0.change)
+                let rhsAbs = abs($1.change)
+                if lhsAbs != rhsAbs {
+                    return lhsAbs > rhsAbs
+                } else {
+                    return $0.symbol < $1.symbol
+                }
+            }
+
         case .updated: return { _,_ in false }
         }
     }
