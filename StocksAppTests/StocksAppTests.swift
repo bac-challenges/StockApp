@@ -50,7 +50,10 @@ final class StockStoreTests {
     @Test
     func testSortByPrice() async throws {
         setUp()
+        
+        store.debounceDuration = 0
         store.sortType = .price
+        await store.sortTask?.value
         
         let symbols = store.stocks.map(\.symbol)
         #expect(symbols == ["GOOG", "MSFT", "AAPL"], "Sorting by price should put highest first")
@@ -59,7 +62,10 @@ final class StockStoreTests {
     @Test
     func testSortByChange() async throws {
         setUp()
+        
+        store.debounceDuration = 0
         store.sortType = .change
+        await store.sortTask?.value
         
         let symbols = store.stocks.map(\.symbol)
         #expect(symbols == ["GOOG", "AAPL", "MSFT"], "Sorting by largest change first")
@@ -68,7 +74,10 @@ final class StockStoreTests {
     @Test
     func testSortByUpdated() async throws {
         setUp()
+        
+        store.debounceDuration = 0
         store.sortType = .updated
+        await store.sortTask?.value
         
         let symbols = store.stocks.map(\.symbol)
         #expect(symbols == ["GOOG", "MSFT", "AAPL"], "Sorting by latest update first")
@@ -92,7 +101,9 @@ final class StockStoreTests {
         ))
         
         // Set sort type
+        store.debounceDuration = 0
         store.sortType = .price
+        await store.sortTask?.value
         
         // Verify order: GOOG highest, then tie broken by symbol
         let symbols = store.stocks.map(\.symbol)

@@ -13,17 +13,18 @@ final class StockStore {
     
     private(set) var stocks: [Stock] = Stock.stocks
     
+    /// Sorting
+    var debounceDuration: UInt64 = 200_000_000
+    var sortTask: Task<Void, Never>?
     var sortType: StockSortKey = .price {
-        didSet { sort() }
+        didSet { scheduleSort() }
     }
-
-    ///
     private var stockIndexBySymbol: [String: Int] = [:]
-    
+
     init(stocks: [Stock]) {
         self.stocks = stocks
         rebuildIndex()
-        sort()
+        scheduleSort()
     }
 }
 
@@ -51,7 +52,7 @@ extension StockStore {
         )
         
         stocks[index] = new
-        sort()
+        scheduleSort()
     }
 }
 
@@ -61,6 +62,15 @@ enum StockSortKey {
 }
 
 private extension StockStore {
+    
+    func scheduleSort() {
+        sortTask?.cancel()
+        
+        sortTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: self?.debounceDuration ?? 0)
+            self?.sort()
+        }
+    }
     
     func sort() {
         let oldOrder = stocks.map(\.symbol)
