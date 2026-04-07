@@ -14,9 +14,9 @@ struct StockList: View {
     var body: some View {
         
         NavigationStack {
-            List(state.stocks) { stock in
-                NavigationLink(value: stock) {
-                    StockRow(stock: stock)
+            List(state.stocks) { item in
+                NavigationLink(value: item.symbol) {
+                    StockRow(stock: item)
                 }
             }
             .toolbar {
@@ -25,8 +25,8 @@ struct StockList: View {
                 }
             }
             .navigationTitle(.stocksKey)
-            .navigationDestination(for: Stock.self) { stock in
-                StockDetail(stock: stock)
+            .navigationDestination(for: String.self) { symbol in
+                StockDetail(symbol: symbol)
             }
         }
     }
@@ -40,18 +40,21 @@ private extension StockList {
         Menu {
             // Price
             Button {
+                
             } label: {
                 Label(.priceKey, systemImage: "dollarsign.circle")
             }
             
             // Change
             Button {
+                
             } label: {
                 Label(.changeKey, systemImage: "chart.bar.fill")
             }
             
             // Updated
             Button {
+                
             } label: {
                 Label(.updatedKey, systemImage: "clock.fill")
             }
