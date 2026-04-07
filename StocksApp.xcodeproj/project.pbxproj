@@ -19,6 +19,7 @@
 /* Begin PBXFileReference section */
 		609A34F02F84F67C00AAFB1A /* StocksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StocksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		609A351D2F8539E900AAFB1A /* StocksAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StocksAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		609A356C2F8593ED00AAFB1A /* README */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = README; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -55,6 +56,7 @@
 		609A34E72F84F67C00AAFB1A = {
 			isa = PBXGroup;
 			children = (
+				609A356C2F8593ED00AAFB1A /* README */,
 				609A34F22F84F67C00AAFB1A /* StocksApp */,
 				609A351E2F8539EA00AAFB1A /* StocksAppTests */,
 				609A34F12F84F67C00AAFB1A /* Products */,
