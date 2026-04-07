@@ -36,10 +36,15 @@ final class AppState: AppStateProtocol {
     
     /// Internal
     private var cancellables = Set<AnyCancellable>()
+    private var broadcastTask: Task<Void, Never>?
+    private let broadcastInterval: UInt64
     
     /// Init
-    init(service: PriceStreamingProtocol) {
+    init(service: PriceStreamingProtocol,
+         broadcastInterval: UInt64 = 2_000_000_000
+    ) {
         self.service = service
+        self.broadcastInterval = broadcastInterval
         self.stockStore = StockStore(stocks: Stock.stocks)
     }
 }
@@ -56,10 +61,22 @@ extension AppState {
         guard lifecycle == .stopped else { return }
         lifecycle = .running
         service.connect()
+        
+        broadcastTask = Task { [weak self] in
+            guard let self else { return }
+            defer { self.broadcastTask = nil }
+            
+            while !Task.isCancelled {
+                await self.broadcastNextSymbol()
+                try? await Task.sleep(nanoseconds: self.broadcastInterval)
+            }
+        }
     }
     
     func stop() {
         lifecycle = .stopped
+        broadcastTask?.cancel()
+        broadcastTask = nil
         service.disconnect()
     }
 }
@@ -74,3 +91,10 @@ private extension AppState {
     }
 }
 
+// MARK: - Broadcasting
+private extension AppState {
+    
+    func broadcastNextSymbol() async {
+        print("broadcastNextSymbol")
+    }
+}

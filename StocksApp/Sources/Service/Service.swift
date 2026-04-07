@@ -51,6 +51,8 @@ final class PriceStreamingService: PriceStreamingProtocol {
         webSocketTask = session!.webSocketTask(with: url)
         webSocketTask?.resume()
         
+        receive()
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.stateSubject.send(.connected)
         }
