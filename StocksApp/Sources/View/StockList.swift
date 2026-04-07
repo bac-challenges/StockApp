@@ -38,23 +38,23 @@ private extension StockList {
     // Sorting menu
     var sortingMenu: some View {
         Menu {
-            // Price
+            /// Price
             Button {
-                
+                state.stockStore.sortType = .price
             } label: {
                 Label(.priceKey, systemImage: "dollarsign.circle")
             }
             
-            // Change
+            /// Change
             Button {
-                
+                state.stockStore.sortType = .change
             } label: {
                 Label(.changeKey, systemImage: "chart.bar.fill")
             }
             
-            // Updated
+            /// Updated
             Button {
-                
+                state.stockStore.sortType = .updated
             } label: {
                 Label(.updatedKey, systemImage: "clock.fill")
             }
