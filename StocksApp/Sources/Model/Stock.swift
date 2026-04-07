@@ -15,14 +15,18 @@ struct Stock: Identifiable, Hashable {
     let price: Double
     let previousPrice: Double
     
+    let lastUpdated: Date
+    
     var id: String {
         symbol
     }
 
+    /// Difference between current and previous price, rounded to 2 decimals
     var change: Double {
         (price - previousPrice).rounded(toPlaces: 2)
     }
     
+    /// Indicates if the stock went up or stayed flat
     var isUp: Bool {
         change >= 0
     }
@@ -57,7 +61,8 @@ extension Stock {
                 symbol: symbol,
                 description: "Description for \(symbol)",
                 price: Double.random(in: 100...500).rounded(toPlaces: 2),
-                previousPrice: Double.random(in: 100...500).rounded(toPlaces: 2)
+                previousPrice: Double.random(in: 100...500).rounded(toPlaces: 2),
+                lastUpdated: Date(timeIntervalSince1970: Double(index * 1000))
             )
         }
     }
@@ -67,7 +72,8 @@ extension Stock {
             symbol: "AAPL",
             description: "Apple Inc.",
             price: 150,
-            previousPrice: 145
+            previousPrice: 145,
+            lastUpdated: Date()
         )
     }
 }

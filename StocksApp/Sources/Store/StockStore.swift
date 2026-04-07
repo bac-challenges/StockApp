@@ -52,8 +52,15 @@ private extension StockStore {
                     return $0.symbol < $1.symbol
                 }
             }
-
-        case .updated: return { _,_ in false }
+            
+        case .updated:
+            return {
+                if $0.lastUpdated != $1.lastUpdated {
+                    return $0.lastUpdated > $1.lastUpdated // newest first
+                } else {
+                    return $0.symbol < $1.symbol
+                }
+            }
         }
     }
 }
