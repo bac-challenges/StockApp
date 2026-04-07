@@ -94,6 +94,10 @@ extension AppState {
 private extension AppState {
     
     func bind() {
+        service.messages
+            .sink { [weak self] text in self?.handleMessage(text) }
+            .store(in: &cancellables)
+
         service.connectionState
             .sink { [weak self] state in self?.connectionState = state }
             .store(in: &cancellables)
@@ -121,5 +125,14 @@ private extension AppState {
         service.send(message)
         
         symbolIndex = (symbolIndex + 1) % symbols.count
+    }
+}
+
+// MARK: - Message Handling
+private extension AppState {
+    
+    func handleMessage(_ text: String) {
+        guard let update = PriceMessage.parse(text) else { return }
+        stockStore.update(update)
     }
 }
