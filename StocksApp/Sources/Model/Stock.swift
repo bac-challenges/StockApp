@@ -42,8 +42,7 @@ extension Double {
 
 // MARK: - Static Data
 extension Stock {
-    
-    static let symbols: [String] = [
+    static nonisolated let symbols: [String] = [
         "AAPL","GOOG","TSLA","AMZN","MSFT",
         "NVDA","META","NFLX","ORCL","INTC",
         "AMD","IBM","UBER","SHOP","SQ",

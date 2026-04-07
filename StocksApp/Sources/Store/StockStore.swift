@@ -38,7 +38,7 @@ extension StockStore {
     }
     
     /// Update stock
-    func update(_ update: PriceUpdate) {
+    func update(_ update: PriceMessage) {
         guard let index = stockIndexBySymbol[update.symbol] else { return }
         
         let old = stocks[index]
@@ -48,7 +48,7 @@ extension StockStore {
             description: old.description,
             price: update.price,
             previousPrice: old.price,
-            lastUpdated: update.lastUpdated
+            lastUpdated: Date(timeIntervalSince1970: update.timestamp)
         )
         
         stocks[index] = new

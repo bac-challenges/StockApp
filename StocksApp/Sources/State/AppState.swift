@@ -38,14 +38,23 @@ final class AppState: AppStateProtocol {
     private var cancellables = Set<AnyCancellable>()
     private var broadcastTask: Task<Void, Never>?
     private let broadcastInterval: UInt64
+    private let symbols: [String]
+    private var symbolIndex = 0
+    private let priceGenerator: (Stock) -> Double
     
     /// Init
     init(service: PriceStreamingProtocol,
-         broadcastInterval: UInt64 = 2_000_000_000
+         broadcastInterval: UInt64 = 2_000_000_000,
+         symbols: [String] = Stock.symbols,
+         priceGenerator: @escaping (Stock) -> Double = { $0.price + Double.random(in: -5...5) }
     ) {
         self.service = service
         self.broadcastInterval = broadcastInterval
+        self.symbols = symbols
+        self.priceGenerator = priceGenerator
         self.stockStore = StockStore(stocks: Stock.stocks)
+        
+        bind()
     }
 }
 
@@ -95,6 +104,22 @@ private extension AppState {
 private extension AppState {
     
     func broadcastNextSymbol() async {
-        print("broadcastNextSymbol")
+        guard lifecycle == .running, !symbols.isEmpty else { return }
+        
+        let symbol = symbols[symbolIndex]
+        guard let stock = stockStore.stock(for: symbol) else { return }
+        
+        let newPrice = priceGenerator(stock)
+        guard abs(newPrice - stock.price) > 0.01 else { return }
+        
+        let message = PriceMessage(
+            symbol: symbol,
+            price: newPrice,
+            timestamp: Date().timeIntervalSince1970
+        ).raw
+        
+        service.send(message)
+        
+        symbolIndex = (symbolIndex + 1) % symbols.count
     }
 }
