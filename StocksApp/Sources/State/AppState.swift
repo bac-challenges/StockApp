@@ -21,15 +21,23 @@ protocol AppStateProtocol: Observable {
 @Observable
 final class AppState: AppStateProtocol {
     
+    /// State
     private(set) var connectionState: ConnectionState = .disconnected
-    private(set) var lifecycle: Lifecycle = .stopped
-    let isRunning = false
     
+    private(set) var lifecycle: Lifecycle = .stopped
+    var isRunning: Bool { lifecycle == .running }
+    
+    /// Delegate stocks to store
     let stockStore: StockStore
     var stocks: [Stock] { stockStore.stocks }
     
+    /// Dependencies
     private let service: PriceStreamingProtocol
     
+    /// Internal
+    private var cancellables = Set<AnyCancellable>()
+    
+    /// Init
     init(service: PriceStreamingProtocol) {
         self.service = service
         self.stockStore = StockStore(stocks: Stock.stocks)
@@ -38,7 +46,7 @@ final class AppState: AppStateProtocol {
 
 // MARK: - Lifecycle
 extension AppState {
-
+    
     enum Lifecycle {
         case stopped
         case running
@@ -55,3 +63,14 @@ extension AppState {
         service.disconnect()
     }
 }
+
+// MARK: - Binding
+private extension AppState {
+    
+    func bind() {
+        service.connectionState
+            .sink { [weak self] state in self?.connectionState = state }
+            .store(in: &cancellables)
+    }
+}
+

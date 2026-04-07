@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct StocksApp: App {
     
-    @State private var appState = AppState(service: MockPriceStreamingService())
+    @State private var appState = AppState(service: PriceStreamingService())
     
     var body: some Scene {
         WindowGroup {

@@ -20,15 +20,20 @@ protocol PriceStreamingProtocol {
     
     func connect()
     func disconnect()
+    func send(_ text: String)
 }
 
-#if DEBUG
-final class MockPriceStreamingService: PriceStreamingProtocol {
+final class PriceStreamingService: PriceStreamingProtocol {
+    
+    private let url = URL(string: "wss://ws.postman-echo.com/raw")!
+    
+    private var webSocketTask: URLSessionWebSocketTask?
+    private var session: URLSession?
     
     private let messageSubject = PassthroughSubject<String, Never>()
     private let stateSubject = CurrentValueSubject<ConnectionState, Never>(.disconnected)
     
-    private var timer: Timer?
+    private var shouldReconnect = false
     
     var messages: AnyPublisher<String, Never> {
         messageSubject.eraseToAnyPublisher()
@@ -39,12 +44,23 @@ final class MockPriceStreamingService: PriceStreamingProtocol {
     }
     
     func connect() {
-        guard stateSubject.value == .disconnected else { return }
-        stateSubject.send(.connected)
+        guard webSocketTask == nil else { return }
+        
+        shouldReconnect = true
+        session = URLSession(configuration: .default)
+        webSocketTask = session!.webSocketTask(with: url)
+        webSocketTask?.resume()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.stateSubject.send(.connected)
+        }
     }
     
     func disconnect() {
-        stateSubject.send(.disconnected)
+        
+    }
+    
+    func send(_ text: String) {
+
     }
 }
-#endif
