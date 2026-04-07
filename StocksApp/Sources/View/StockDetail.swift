@@ -14,7 +14,7 @@ struct StockDetail: View {
     let symbol: String
     
     var stock: Stock? {
-        state.stockStore.stocks.first { $0.symbol == symbol }
+        state.stockStore.stock(for: symbol)
     }
     
     var body: some View {

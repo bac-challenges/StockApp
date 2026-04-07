@@ -17,17 +17,43 @@ final class StockStore {
         didSet { sort() }
     }
 
+    ///
+    private var stockIndexBySymbol: [String: Int] = [:]
+    
     init(stocks: [Stock]) {
         self.stocks = stocks
+        rebuildIndex()
         sort()
     }
 }
 
+// MARK: - Public API
+extension StockStore {
+    
+    /// Lookup stock by symbol
+    func stock(for symbol: String) -> Stock? {
+        guard let index = stockIndexBySymbol[symbol] else { return nil }
+        return stocks[index]
+    }
+    
+}
+
 // MARK: - Sorting
+enum StockSortKey {
+    case price, change, updated
+}
+
 private extension StockStore {
     
     func sort() {
+        let oldOrder = stocks.map(\.symbol)
+        
         stocks.sort(by: comparator())
+        
+        let newOrder = stocks.map(\.symbol)
+        if oldOrder != newOrder {
+            rebuildIndex()
+        }
     }
     
     func comparator() -> (Stock, Stock) -> Bool {
@@ -65,7 +91,11 @@ private extension StockStore {
     }
 }
 
-// MARK: - Sorting
-enum StockSortKey {
-    case price, change, updated
+// MARK: - Indexing
+private extension StockStore {
+    func rebuildIndex() {
+        stockIndexBySymbol = Dictionary(
+            uniqueKeysWithValues: stocks.enumerated().map { ($1.symbol, $0) }
+        )
+    }
 }
