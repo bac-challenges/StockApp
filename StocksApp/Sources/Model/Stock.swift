@@ -18,6 +18,14 @@ struct Stock: Identifiable {
     var id: String {
         symbol
     }
+
+    var change: Double {
+        (price - previousPrice).rounded(toPlaces: 2)
+    }
+    
+    var isUp: Bool {
+        change >= 0
+    }
 }
 
 // MARK: - Helpers

@@ -12,7 +12,29 @@ struct StockRow: View {
     let stock: Stock
 
     var body: some View {
-        Text(stock.symbol)
+        VStack(alignment: .leading) {
+            HStack(alignment: .top) {
+                Text(stock.symbol)
+                    .font(.headline)
+
+                Spacer()
+                
+                Text(String(format: "%.2f", stock.price))
+            }
+            
+            HStack(alignment: .bottom, spacing: 2) {
+                
+                Spacer()
+                
+                Text(String(format: "%.2f", stock.change))
+                    .foregroundColor(stock.isUp ? .green : .red)
+                    .font(.caption)
+                
+                Text(stock.isUp ? "↑" : "↓")
+                    .foregroundColor(stock.isUp ? .green : .red)
+                    .font(.caption)
+            }
+        }
     }
 }
 
