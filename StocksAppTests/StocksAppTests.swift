@@ -35,7 +35,10 @@ final class StockStoreTests {
     func testUpdateStockChangesPriceAndPreviousPrice() async throws {
         setUp()
         
-        let update = PriceUpdate(symbol: "AAPL", price: 155, lastUpdated: Date(timeIntervalSince1970: 3000))
+        let update = PriceMessage(symbol: "AAPL",
+                                  price: 155,
+                                  timestamp: Date(timeIntervalSince1970: 3000)
+                                                .timeIntervalSince1970)
         store.update(update)
         
         guard let updatedStock = store.stock(for: "AAPL") else {
@@ -88,16 +91,16 @@ final class StockStoreTests {
         setUp()
         
         // Update AAPL and MSFT to have the same price using the public `update` method
-        store.update(PriceUpdate(
+        store.update(PriceMessage(
             symbol: "AAPL",
             price: 300,
-            lastUpdated: Date(timeIntervalSince1970: 1000)
+            timestamp: Date(timeIntervalSince1970: 1000).timeIntervalSince1970
         ))
         
-        store.update(PriceUpdate(
+        store.update(PriceMessage(
             symbol: "MSFT",
             price: 300,
-            lastUpdated: Date(timeIntervalSince1970: 1500)
+            timestamp: Date(timeIntervalSince1970: 1500).timeIntervalSince1970
         ))
         
         // Set sort type

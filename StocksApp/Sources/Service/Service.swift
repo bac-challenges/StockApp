@@ -30,7 +30,7 @@ final class PriceStreamingService: PriceStreamingProtocol {
     private var webSocketTask: URLSessionWebSocketTask?
     private var session: URLSession?
     
-    private let messageSubject = PassthroughSubject<String, Never>()
+    let messageSubject = PassthroughSubject<String, Never>()
     private let stateSubject = CurrentValueSubject<ConnectionState, Never>(.disconnected)
     
     private var shouldReconnect = false
