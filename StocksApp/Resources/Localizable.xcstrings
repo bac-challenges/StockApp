@@ -7,6 +7,39 @@
     "↓" : {
 
     },
+    "changeKey" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change"
+          }
+        }
+      }
+    },
+    "priceKey" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Price"
+          }
+        }
+      }
+    },
+    "sortKey" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sort"
+          }
+        }
+      }
+    },
     "stocksKey" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -14,6 +47,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stocks"
+          }
+        }
+      }
+    },
+    "updatedKey" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updated"
           }
         }
       }

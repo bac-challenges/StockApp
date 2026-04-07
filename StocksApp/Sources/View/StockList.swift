@@ -19,6 +19,11 @@ struct StockList: View {
                     StockRow(stock: stock)
                 }
             }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    sortingMenu
+                }
+            }
             .navigationTitle(.stocksKey)
             .navigationDestination(for: Stock.self) { stock in
                 StockDetail(stock: stock)
@@ -27,6 +32,32 @@ struct StockList: View {
     }
 }
 
-#Preview {
-    StockList()
+// MARK: Components
+private extension StockList {
+    
+    // Sorting menu
+    var sortingMenu: some View {
+        Menu {
+            // Price
+            Button {
+            } label: {
+                Label(.priceKey, systemImage: "dollarsign.circle")
+            }
+            
+            // Change
+            Button {
+            } label: {
+                Label(.changeKey, systemImage: "chart.bar.fill")
+            }
+            
+            // Updated
+            Button {
+            } label: {
+                Label(.updatedKey, systemImage: "clock.fill")
+            }
+            
+        } label: {
+            Label(.sortKey, systemImage: "arrow.up.arrow.down.circle")
+        }
+    }
 }
