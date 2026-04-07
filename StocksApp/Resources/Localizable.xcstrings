@@ -1,7 +1,23 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "↑" : {
 
+    },
+    "↓" : {
+
+    },
+    "stocksKey" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stocks"
+          }
+        }
+      }
+    }
   },
   "version" : "1.2"
 }

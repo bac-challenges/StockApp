@@ -9,11 +9,20 @@ import SwiftUI
 
 struct StockList: View {
     
-    private let items: [Stock] = Stock.stocks
+    private let stocks: [Stock] = Stock.stocks
     
     var body: some View {
-        List(items) { item in
-            StockRow(stock: item)
+        
+        NavigationStack {
+            List(stocks) { stock in
+                NavigationLink(value: stock) {
+                    StockRow(stock: stock)
+                }
+            }
+            .navigationTitle(.stocksKey)
+            .navigationDestination(for: Stock.self) { stock in
+                StockDetail(stock: stock)
+            }
         }
     }
 }

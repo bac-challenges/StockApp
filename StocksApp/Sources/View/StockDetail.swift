@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SymbolDetail: View {
+struct StockDetail: View {
     
     let stock: Stock
     

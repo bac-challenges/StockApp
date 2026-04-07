@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Stock: Identifiable {
+struct Stock: Identifiable, Hashable {
     
     let symbol: String
     let description: String
