@@ -1,5 +1,5 @@
 //
-//  StocksAppApp.swift
+//  StocksApp.swift
 //  StocksApp
 //
 //  Created by emile on 07/04/2026.
@@ -8,10 +8,10 @@
 import SwiftUI
 
 @main
-struct StocksAppApp: App {
+struct StocksApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Text("Hello")
         }
     }
 }
