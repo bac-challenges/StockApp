@@ -9,11 +9,7 @@ import SwiftUI
 
 struct StockList: View {
     
-    private let items: [Stock] = [
-        Stock.sample,
-        Stock.sample,
-        Stock.sample
-    ]
+    private let items: [Stock] = Stock.stocks
     
     var body: some View {
         List(items) { item in
