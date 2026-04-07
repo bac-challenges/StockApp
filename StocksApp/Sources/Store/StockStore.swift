@@ -19,6 +19,7 @@ final class StockStore {
 
     init(stocks: [Stock]) {
         self.stocks = stocks
+        sort()
     }
 }
 
@@ -26,7 +27,23 @@ final class StockStore {
 private extension StockStore {
     
     func sort() {
-        print(sortType)
+        stocks.sort(by: comparator())
+    }
+    
+    func comparator() -> (Stock, Stock) -> Bool {
+        switch sortType {
+
+        case .price:
+            return {
+                if $0.price != $1.price {
+                    return $0.price > $1.price // highest first
+                } else {
+                    return $0.symbol < $1.symbol // tie breaker
+                }
+            }
+        case .change: return { _,_ in false }
+        case .updated: return { _,_ in false }
+        }
     }
 }
 
