@@ -28,12 +28,15 @@ final class AppState: AppStateProtocol {
     let stockStore: StockStore
     var stocks: [Stock] { stockStore.stocks }
     
-    init() {
+    private let service: PriceStreamingProtocol
+    
+    init(service: PriceStreamingProtocol) {
+        self.service = service
         self.stockStore = StockStore(stocks: Stock.stocks)
     }
 }
 
-// MARK: - Lifecycle[
+// MARK: - Lifecycle
 extension AppState {
 
     enum Lifecycle {
