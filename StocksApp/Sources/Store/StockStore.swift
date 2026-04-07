@@ -36,6 +36,23 @@ extension StockStore {
         return stocks[index]
     }
     
+    /// Update stock
+    func update(_ update: PriceUpdate) {
+        guard let index = stockIndexBySymbol[update.symbol] else { return }
+        
+        let old = stocks[index]
+        
+        let new = Stock(
+            symbol: old.symbol,
+            description: old.description,
+            price: update.price,
+            previousPrice: old.price,
+            lastUpdated: update.lastUpdated
+        )
+        
+        stocks[index] = new
+        sort()
+    }
 }
 
 // MARK: - Sorting

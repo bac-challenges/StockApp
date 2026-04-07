@@ -30,6 +30,22 @@ final class StockStoreTests {
         setUp()
         #expect(store.stocks.count == 3, "StockStore should initialize with 3 stocks")
     }
+    
+    @Test
+    func testUpdateStockChangesPriceAndPreviousPrice() async throws {
+        setUp()
+        
+        let update = PriceUpdate(symbol: "AAPL", price: 155, lastUpdated: Date(timeIntervalSince1970: 3000))
+        store.update(update)
+        
+        guard let updatedStock = store.stock(for: "AAPL") else {
+            throw TestError("Updated stock not found")
+        }
+        
+        #expect(updatedStock.price == 155, "Price should update")
+        #expect(updatedStock.previousPrice == 150, "Previous price should be preserved")
+        #expect(updatedStock.lastUpdated == Date(timeIntervalSince1970: 3000), "lastUpdated should match update")
+    }
 
     @Test
     func testSortByPrice() async throws {
@@ -56,6 +72,32 @@ final class StockStoreTests {
         
         let symbols = store.stocks.map(\.symbol)
         #expect(symbols == ["GOOG", "MSFT", "AAPL"], "Sorting by latest update first")
+    }
+    
+    @Test
+    func testStableSortByPriceForEqualValues() async throws {
+        setUp()
+        
+        // Update AAPL and MSFT to have the same price using the public `update` method
+        store.update(PriceUpdate(
+            symbol: "AAPL",
+            price: 300,
+            lastUpdated: Date(timeIntervalSince1970: 1000)
+        ))
+        
+        store.update(PriceUpdate(
+            symbol: "MSFT",
+            price: 300,
+            lastUpdated: Date(timeIntervalSince1970: 1500)
+        ))
+        
+        // Set sort type
+        store.sortType = .price
+        
+        // Verify order: GOOG highest, then tie broken by symbol
+        let symbols = store.stocks.map(\.symbol)
+        #expect(symbols[0] == "GOOG", "Highest price first")
+        #expect(symbols[1] < symbols[2], "Tie broken by symbol for stability")
     }
 }
 
