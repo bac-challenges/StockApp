@@ -9,12 +9,12 @@ import SwiftUI
 
 struct StockList: View {
     
-    private let stocks: [Stock] = Stock.stocks
+    @Environment(AppState.self) private var state
     
     var body: some View {
         
         NavigationStack {
-            List(stocks) { stock in
+            List(state.stocks) { stock in
                 NavigationLink(value: stock) {
                     StockRow(stock: stock)
                 }
