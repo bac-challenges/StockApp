@@ -47,9 +47,11 @@ extension AppState {
     func start() {
         guard lifecycle == .stopped else { return }
         lifecycle = .running
+        service.connect()
     }
     
     func stop() {
         lifecycle = .stopped
+        service.disconnect()
     }
 }

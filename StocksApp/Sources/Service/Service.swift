@@ -20,7 +20,6 @@ protocol PriceStreamingProtocol {
     
     func connect()
     func disconnect()
-    func send(_ text: String)
 }
 
 #if DEBUG
@@ -40,12 +39,12 @@ final class MockPriceStreamingService: PriceStreamingProtocol {
     }
     
     func connect() {
+        guard stateSubject.value == .disconnected else { return }
+        stateSubject.send(.connected)
     }
     
     func disconnect() {
-    }
-    
-    func send(_ text: String) {
+        stateSubject.send(.disconnected)
     }
 }
 #endif
