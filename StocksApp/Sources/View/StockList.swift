@@ -23,6 +23,14 @@ struct StockList: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     sortingMenu
                 }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        state.isRunning ? state.stop():state.start()
+                    } label: {
+                        connectionControl
+                    }
+                }
             }
             .navigationTitle(.stocksKey)
             .navigationDestination(for: String.self) { symbol in
@@ -61,6 +69,16 @@ private extension StockList {
             
         } label: {
             Label(.sortKey, systemImage: "arrow.up.arrow.down.circle")
+        }
+    }
+    
+    // Connection control
+    var connectionControl: some View {
+        HStack(spacing: 5) {
+            Circle()
+                .fill(state.connectionState == .connected ? .green : .red)
+                .frame(width: 10, height: 10)
+            Text("\(state.isRunning ? .stopKey : .startKey)")
         }
     }
 }

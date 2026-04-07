@@ -21,9 +21,11 @@ protocol AppStateProtocol: Observable {
 @Observable
 final class AppState: AppStateProtocol {
     
+    private(set) var connectionState: ConnectionState = .disconnected
+    let isRunning = false
+    
     let stockStore: StockStore
     var stocks: [Stock] { stockStore.stocks }
-    let isRunning = false
     
     init() {
         self.stockStore = StockStore(stocks: Stock.stocks)

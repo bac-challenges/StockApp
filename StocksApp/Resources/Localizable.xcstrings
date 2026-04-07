@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@" : {
+
+    },
     "↑" : {
 
     },
@@ -24,7 +27,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Price"
+            "value" : "‘"
           }
         }
       }
@@ -40,6 +43,17 @@
         }
       }
     },
+    "startKey" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
+          }
+        }
+      }
+    },
     "stocksKey" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -47,6 +61,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stocks"
+          }
+        }
+      }
+    },
+    "stopKey" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop"
           }
         }
       }
