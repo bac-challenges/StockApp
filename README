@@ -1,15 +1,8 @@
-//
-//  README
-//  StocksApp
-//
-//  Created by emile on 07/04/2026.
-//
-
-StocksApp
+# StocksApp
 
 StocksApp is a SwiftUI application that simulates a real-time stock ticker. It leverages Combine and async/await to provide live price updates for a predefined set of stocks. The app is designed to demonstrate reactive state management and broadcasting updates without requiring a live backend connection.
 
-Features
+## Features
 - Real-time stock updates: Prices are broadcasted at regular intervals using a configurable price generator.
 - Sorting: Stocks can be sorted by price, price change, or last updated time.
 - Connection simulation: Connect or disconnect the price streaming service with a single button.
@@ -17,7 +10,7 @@ Features
 - Reactive architecture: Uses @Observable, Combine, and Swift Concurrency for efficient state updates.
 
 
-Architecture
+## Architecture
 - AppState: Central state manager conforming to AppStateProtocol. Handles lifecycle, price broadcasting, and message handling.
 - StockStore: Manages stock data, updates, and sorting.
 - PriceStreamingService: Simulates a WebSocket connection for broadcasting and receiving stock prices.
