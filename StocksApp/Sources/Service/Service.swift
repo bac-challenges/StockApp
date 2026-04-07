@@ -72,4 +72,28 @@ final class PriceStreamingService: PriceStreamingProtocol {
             }
         }
     }
+    
+    private func receive() {
+        webSocketTask?.receive { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let message):
+                if case let .string(text) = message {
+                    self.messageSubject.send(text)
+                }
+                self.receive()
+                
+            case .failure:
+                self.stateSubject.send(.disconnected)
+                self.webSocketTask = nil
+                
+                guard self.shouldReconnect else { return }
+                
+                DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+                    self.connect()
+                }
+            }
+        }
+    }
 }
