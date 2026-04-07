@@ -13,7 +13,7 @@ struct StockList: View {
     
     var body: some View {
         List(items) { item in
-            Text(item.symbol)
+            StockRow(stock: item)
         }
     }
 }
