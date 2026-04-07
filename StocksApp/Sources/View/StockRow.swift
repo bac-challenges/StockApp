@@ -13,31 +13,40 @@ struct StockRow: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            HStack(alignment: .top) {
-                Text(stock.symbol)
-                    .font(.headline)
-
-                Spacer()
-                
-                Text(String(format: "%.2f", stock.price))
-            }
-            
-            HStack(alignment: .bottom, spacing: 2) {
-                
-                Spacer()
-                
-                Text(String(format: "%.2f", stock.change))
-                    .foregroundColor(stock.isUp ? .green : .red)
-                    .font(.caption)
-                
-                Text(stock.isUp ? "↑" : "↓")
-                    .foregroundColor(stock.isUp ? .green : .red)
-                    .font(.caption)
-            }
+            stockInfo
+            stockDetails
         }
     }
 }
 
-#Preview {
-    StockRow(stock: Stock.sample)
+// MARK: Components
+private extension StockRow {
+    
+    /// Stock Info
+    var stockInfo: some View {
+        HStack(alignment: .top) {
+            Text(stock.symbol)
+                .font(.headline)
+
+            Spacer()
+            
+            Text(String(format: "%.2f", stock.price))
+        }
+    }
+    
+    /// Stock Details
+    var stockDetails: some View {
+        HStack(alignment: .bottom, spacing: 2) {
+            
+            Spacer()
+            
+            Text(String(format: "%.2f", stock.change))
+                .foregroundColor(stock.isUp ? .green : .red)
+                .font(.caption)
+            
+            Text(stock.isUp ? "↑" : "↓")
+                .foregroundColor(stock.isUp ? .green : .red)
+                .font(.caption)
+        }
+    }
 }
