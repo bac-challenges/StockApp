@@ -66,6 +66,10 @@ final class PriceStreamingService: PriceStreamingProtocol {
     }
     
     func send(_ text: String) {
-
+        webSocketTask?.send(.string(text)) { error in
+            if let error {
+                print("Send error:", error)
+            }
+        }
     }
 }
