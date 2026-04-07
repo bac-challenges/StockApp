@@ -57,7 +57,12 @@ final class PriceStreamingService: PriceStreamingProtocol {
     }
     
     func disconnect() {
+        shouldReconnect = false
+        webSocketTask?.cancel(with: .goingAway, reason: nil)
+        webSocketTask = nil
+        session = nil
         
+        stateSubject.send(.disconnected)
     }
     
     func send(_ text: String) {
