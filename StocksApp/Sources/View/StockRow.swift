@@ -10,11 +10,22 @@ import SwiftUI
 struct StockRow: View {
     
     let stock: Stock
+    
+    @State
+    private var flashColor: Color? = nil
 
     var body: some View {
         VStack(alignment: .leading) {
             stockInfo
             stockDetails
+        }
+        .onChange(of: stock.price) {
+            if stock.price != stock.previousPrice {
+                flashColor = stock.isUp ? .green : .red
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    flashColor = nil
+                }
+            }
         }
     }
 }
@@ -27,10 +38,14 @@ private extension StockRow {
         HStack(alignment: .top) {
             Text(stock.symbol)
                 .font(.headline)
+                .foregroundColor(flashColor ?? .primary)
+                .animation(.easeInOut(duration: 0.2), value: flashColor)
 
             Spacer()
             
             Text(String(format: "%.2f", stock.price))
+                .foregroundColor(flashColor ?? .primary)
+                .animation(.easeInOut(duration: 0.2), value: flashColor)
         }
     }
     
