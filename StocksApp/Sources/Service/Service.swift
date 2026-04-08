@@ -99,3 +99,35 @@ final class PriceStreamingService: PriceStreamingProtocol {
         }
     }
 }
+
+// MARK: Mock Service
+#if DEBUG
+final class MockStreamingService: PriceStreamingProtocol {
+    
+    var sentMessages: [String] = []
+
+    private let _messages = PassthroughSubject<String, Never>()
+    private let _connectionState = CurrentValueSubject<ConnectionState, Never>(.disconnected)
+    
+    var messages: AnyPublisher<String, Never> { _messages.eraseToAnyPublisher() }
+    var connectionState: AnyPublisher<ConnectionState, Never> { _connectionState.eraseToAnyPublisher() }
+    
+    private(set) var didConnect = false
+    private(set) var didDisconnect = false
+    
+    func connect() {
+        didConnect = true
+        _connectionState.send(.connected)
+    }
+    
+    func disconnect() {
+        didDisconnect = true
+        _connectionState.send(.disconnected)
+    }
+    
+    func send(_ text: String) {
+        sentMessages.append(text)
+        _messages.send(text)
+    }
+}
+#endif

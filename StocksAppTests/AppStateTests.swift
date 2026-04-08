@@ -13,11 +13,11 @@ import Combine
 @MainActor
 final class AppStateTests {
 
-    var service: MockService!
+    var service: MockStreamingService!
     var state: AppState!
 
     func setUp() {
-        service = MockService()
+        service = MockStreamingService()
         state = AppState(
             service: service,
             broadcastInterval: 0,
@@ -25,35 +25,6 @@ final class AppStateTests {
             priceGenerator: { $0.price + 1 }
         )
     }
-
-    // MARK: - Mocks
-
-    final class MockService: PriceStreamingProtocol {
-        private let _messages = PassthroughSubject<String, Never>()
-        private let _connectionState = CurrentValueSubject<ConnectionState, Never>(.disconnected)
-        
-        var messages: AnyPublisher<String, Never> { _messages.eraseToAnyPublisher() }
-        var connectionState: AnyPublisher<ConnectionState, Never> { _connectionState.eraseToAnyPublisher() }
-        
-        private(set) var didConnect = false
-        private(set) var didDisconnect = false
-        
-        func connect() {
-            didConnect = true
-            _connectionState.send(.connected)
-        }
-        
-        func disconnect() {
-            didDisconnect = true
-            _connectionState.send(.disconnected)
-        }
-        
-        func send(_ text: String) {
-            _messages.send(text)
-        }
-    }
-
-    // MARK: - Tests
 
     @Test
     func testInitialState() async throws {
@@ -90,11 +61,8 @@ final class AppStateTests {
         let stock = state.stocks.first!
         let oldPrice = stock.price
         let timestamp = Date(timeIntervalSince1970: 3000)
-        
-        // Construct pipe-delimited message
         let updateMessage = "\(stock.symbol)|\(oldPrice + 10)|\(timestamp.timeIntervalSince1970)"
         
-        // Send message
         service.send(updateMessage)
         
         // Wait briefly for Combine pipeline

@@ -21,27 +21,6 @@ final class BroadcastManagerTests {
         store = MockStockStore()
     }
     
-    // MARK: - Mocks
-    @MainActor
-    final class MockStreamingService: PriceStreamingProtocol {
-        
-        var sentMessages: [String] = []
-        
-        private let messagesSubject = PassthroughSubject<String, Never>()
-        var messages: AnyPublisher<String, Never> { messagesSubject.eraseToAnyPublisher() }
-        
-        private let connectionStateSubject = PassthroughSubject<ConnectionState, Never>()
-        var connectionState: AnyPublisher<ConnectionState, Never> { connectionStateSubject.eraseToAnyPublisher() }
-        
-        func connect() {}
-        func disconnect() {}
-        
-        func send(_ text: String) {
-            sentMessages.append(text)
-            messagesSubject.send(text)
-        }
-    }
-    
     final class MockStockStore: StockStoreProtocol {
         let stocks: [Stock] = []
         private var storage: [String: Stock] = [:]
