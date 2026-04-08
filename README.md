@@ -11,7 +11,8 @@
 
 
 ## Architecture
-- **AppState:** Central state manager conforming to AppStateProtocol. Handles lifecycle, price broadcasting, and message handling.
+- **AppState:** Central state manager conforming to AppStateProtocol. Handles lifecycle and message handling.
+- **BroadcastManager** Handles price broadcasting.
 - **StockStore**: Manages stock data, updates, and sorting.
 - **PriceStreamingService**: Simulates a WebSocket connection for broadcasting and receiving stock prices.
 - **Views**:
