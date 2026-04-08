@@ -75,6 +75,7 @@ extension AppState {
     }
     
     func stop() {
+        guard lifecycle == .running else { return }
         lifecycle = .stopped
         broadcaster.stop()
         service.disconnect()
