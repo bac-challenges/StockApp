@@ -20,6 +20,7 @@ final class AppStateTests {
         service = MockStreamingService()
         state = AppState(
             service: service,
+            stockStore: StockStore(stocks: Stock.stocks),
             broadcastInterval: 0,
             symbols: ["AAPL", "GOOG"],
             priceGenerator: { $0.price + 1 }

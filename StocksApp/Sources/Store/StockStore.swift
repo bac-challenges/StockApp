@@ -24,8 +24,8 @@ protocol StockStoreProtocol: AnyObject {
 @Observable
 class StockStore: StockStoreProtocol {
     
-    private(set) var stocks: [Stock] = Stock.stocks
-    
+    private(set) var stocks: [Stock] = []
+
     /// Sorting
     var debounceDuration: UInt64 = 200_000_000
     var sortTask: Task<Void, Never>?
@@ -38,6 +38,18 @@ class StockStore: StockStoreProtocol {
         self.stocks = stocks
         rebuildIndex()
         scheduleSort()
+    }
+    
+    convenience init(symbols: [String]) {
+        let stocks = symbols.map {
+            Stock(symbol: $0,
+                  description: "",
+                  price: 100,
+                  previousPrice: 100,
+                  lastUpdated: Date())
+        }
+        
+        self.init(stocks: stocks)
     }
 }
 

@@ -40,12 +40,13 @@ final class AppState: AppStateProtocol {
     /// Init
     init(
         service: PriceStreamingProtocol,
+        stockStore: StockStore,
         broadcastInterval: UInt64 = 2_000_000_000,
         symbols: [String] = Stock.symbols,
         priceGenerator: @escaping (Stock) -> Double = { $0.price + Double.random(in: -5...5) }
     ) {
         self.service = service
-        self.stockStore = StockStore(stocks: Stock.stocks)
+        self.stockStore = stockStore
         
         self.broadcaster = BroadcastManager(
             service: service,
@@ -102,7 +103,6 @@ private extension AppState {
 
 @MainActor
 private extension AppState {
-    
     func handleMessage(_ text: String) {
         guard let update = PriceMessage.parse(text) else { return }
         stockStore.update(update)
