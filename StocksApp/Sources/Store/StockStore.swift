@@ -8,8 +8,21 @@
 import Foundation
 
 @MainActor
+protocol StockStoreProtocol: AnyObject {
+    
+    /// Current list of stocks (read-only)
+    var stocks: [Stock] { get }
+    
+    /// Lookup a stock by symbol
+    func stock(for symbol: String) -> Stock?
+    
+    /// Update a stock based on a price message
+    func update(_ update: PriceMessage)
+}
+
+@MainActor
 @Observable
-final class StockStore {
+class StockStore: StockStoreProtocol {
     
     private(set) var stocks: [Stock] = Stock.stocks
     

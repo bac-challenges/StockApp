@@ -11,7 +11,7 @@ import Foundation
 final class BroadcastManager {
     
     private let service: PriceStreamingProtocol
-    private let stockStore: StockStore
+    private let stockStore: StockStoreProtocol
     
     private let broadcastInterval: UInt64
     private let symbols: [String]
@@ -22,7 +22,7 @@ final class BroadcastManager {
     
     init(
         service: PriceStreamingProtocol,
-        stockStore: StockStore,
+        stockStore: StockStoreProtocol,
         broadcastInterval: UInt64,
         symbols: [String],
         priceGenerator: @escaping (Stock) -> Double
@@ -71,5 +71,12 @@ final class BroadcastManager {
         service.send(message)
         
         symbolIndex = (symbolIndex + 1) % symbols.count
+    }
+}
+
+// MARK: Testing
+extension BroadcastManager {
+    func broadcastNextForTest() async {
+        await broadcastNext()
     }
 }
