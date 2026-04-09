@@ -32,21 +32,21 @@ final class AppStore {
     private var hasBootstrapped = false
 
     init(
-        service: PriceStreamingProtocol,
+        priceBroadcastService: PriceStreamingProtocol,
         stockFetchingService: StockFetchingProtocol,
         initialStocks: [Stock] = [],
         broadcastInterval: UInt64 = 2_000_000_000,
         sortDebounceDuration: UInt64 = 200_000_000,
         priceGenerator: @escaping (Stock) -> Double = { $0.price + Double.random(in: -5...5) }
     ) {
-        self.service = service
+        self.service = priceBroadcastService
         self.stockFetchingService = stockFetchingService
         self.sortDebounceDuration = sortDebounceDuration
         self.state = StocksFeature.State(
             stocks: StockSorting.sortedStocks(initialStocks, by: .price)
         )
         self.broadcaster = BroadcastManager(
-            service: service,
+            service: priceBroadcastService,
             stockLookup: { _ in nil },
             broadcastInterval: broadcastInterval,
             symbols: Self.uniqueSymbols(from: initialStocks),

@@ -11,7 +11,7 @@ import SwiftUI
 struct StocksApp: App {
     
     @State private var store = AppStore(
-        service: PriceStreamingService(),
+        priceBroadcastService: PriceStreamingService(),
         stockFetchingService: MockStockFetchingService()
     )
     

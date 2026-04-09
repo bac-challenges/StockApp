@@ -20,7 +20,7 @@ final class AppStoreTests {
         service = MockStreamingService()
         stockFetchingService = TestStockFetchingService(stocksToReturn: Stock.stocks)
         store = AppStore(
-            service: service,
+            priceBroadcastService: service,
             stockFetchingService: stockFetchingService,
             initialStocks: Stock.stocks,
             broadcastInterval: 0,
@@ -85,7 +85,7 @@ final class AppStoreTests {
         service = MockStreamingService()
         stockFetchingService = TestStockFetchingService()
         store = AppStore(
-            service: service,
+            priceBroadcastService: service,
             stockFetchingService: stockFetchingService,
             initialStocks: StockFixtures.sampleStocks,
             broadcastInterval: 0,
@@ -104,7 +104,7 @@ final class AppStoreTests {
         service = MockStreamingService()
         stockFetchingService = TestStockFetchingService()
         store = AppStore(
-            service: service,
+            priceBroadcastService: service,
             stockFetchingService: stockFetchingService,
             initialStocks: StockFixtures.sampleStocks,
             broadcastInterval: 0,
@@ -173,7 +173,7 @@ final class AppStoreTests {
         service = MockStreamingService()
         stockFetchingService = TestStockFetchingService(stocksToReturn: StockFixtures.sampleStocks)
         store = AppStore(
-            service: service,
+            priceBroadcastService: service,
             stockFetchingService: stockFetchingService,
             initialStocks: [],
             broadcastInterval: 0,
@@ -205,7 +205,7 @@ final class AppStoreTests {
         stockFetchingService = TestStockFetchingService(stocksToReturn: StockFixtures.sampleStocks)
         stockFetchingService.errorToThrow = TestError("REST failure")
         store = AppStore(
-            service: service,
+            priceBroadcastService: service,
             stockFetchingService: stockFetchingService,
             initialStocks: [],
             broadcastInterval: 0,
@@ -235,7 +235,7 @@ final class AppStoreTests {
         service = MockStreamingService()
         stockFetchingService = TestStockFetchingService(stocksToReturn: [])
         store = AppStore(
-            service: service,
+            priceBroadcastService: service,
             stockFetchingService: stockFetchingService,
             initialStocks: [],
             broadcastInterval: 0,
@@ -260,7 +260,7 @@ final class AppStoreTests {
             StockFixtures.stock(symbol: "GOOG", description: "Google", price: 200, previousPrice: 199),
         ])
         store = AppStore(
-            service: service,
+            priceBroadcastService: service,
             stockFetchingService: stockFetchingService,
             initialStocks: [],
             broadcastInterval: 1_000_000,
@@ -286,7 +286,7 @@ final class AppStoreTests {
         service = MockStreamingService()
         stockFetchingService = TestStockFetchingService(stocksToReturn: StockFixtures.sampleStocks)
         store = AppStore(
-            service: service,
+            priceBroadcastService: service,
             stockFetchingService: stockFetchingService,
             initialStocks: [],
             broadcastInterval: 1_000_000,
