@@ -21,13 +21,16 @@
         }
       }
     },
+    "Loading Stocks..." : {
+
+    },
     "priceKey" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "‘"
+            "value" : "Price"
           }
         }
       }
