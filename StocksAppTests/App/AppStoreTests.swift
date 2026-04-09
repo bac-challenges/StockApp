@@ -200,6 +200,113 @@ final class AppStoreTests {
     }
 
     @Test
+    func testBootstrapFailureDoesNotStartStreamingAndAllowsRetry() async throws {
+        service = MockStreamingService()
+        stockFetchingService = TestStockFetchingService(stocksToReturn: StockFixtures.sampleStocks)
+        stockFetchingService.errorToThrow = TestError("REST failure")
+        store = AppStore(
+            service: service,
+            stockFetchingService: stockFetchingService,
+            initialStocks: [],
+            broadcastInterval: 0,
+            sortDebounceDuration: 0,
+            priceGenerator: { $0.price + 1 }
+        )
+
+        await store.bootstrap()
+
+        #expect(stockFetchingService.fetchCount == 1)
+        #expect(!store.isBootstrapping)
+        #expect(!store.isRunning)
+        #expect(!service.didConnect)
+        #expect(store.stocks.isEmpty)
+
+        stockFetchingService.errorToThrow = nil
+        await store.bootstrap()
+
+        #expect(stockFetchingService.fetchCount == 2)
+        #expect(store.isRunning)
+        #expect(service.didConnect)
+        #expect(!store.stocks.isEmpty)
+    }
+
+    @Test
+    func testBootstrapWithEmptyResponseKeepsListEmptyAndStartsSafely() async throws {
+        service = MockStreamingService()
+        stockFetchingService = TestStockFetchingService(stocksToReturn: [])
+        store = AppStore(
+            service: service,
+            stockFetchingService: stockFetchingService,
+            initialStocks: [],
+            broadcastInterval: 0,
+            sortDebounceDuration: 0,
+            priceGenerator: { $0.price + 1 }
+        )
+
+        await store.bootstrap()
+
+        #expect(stockFetchingService.fetchCount == 1)
+        #expect(store.stocks.isEmpty)
+        #expect(store.isRunning)
+        #expect(service.didConnect)
+    }
+
+    @Test
+    func testBootstrapDeduplicatesBroadcastSymbolsFromFetchedStocks() async throws {
+        service = MockStreamingService()
+        stockFetchingService = TestStockFetchingService(stocksToReturn: [
+            StockFixtures.stock(symbol: "AAPL", description: "Apple", price: 100, previousPrice: 99),
+            StockFixtures.stock(symbol: "AAPL", description: "Apple Duplicate", price: 101, previousPrice: 100),
+            StockFixtures.stock(symbol: "GOOG", description: "Google", price: 200, previousPrice: 199),
+        ])
+        store = AppStore(
+            service: service,
+            stockFetchingService: stockFetchingService,
+            initialStocks: [],
+            broadcastInterval: 1_000_000,
+            sortDebounceDuration: 0,
+            priceGenerator: { $0.price + 1 }
+        )
+
+        await store.bootstrap()
+        try? await Task.sleep(nanoseconds: 20_000_000)
+
+        let emittedSymbols = service.sentMessages.compactMap { PriceMessage.parse($0)?.symbol }
+        let uniqueEmittedSymbols = Set(emittedSymbols)
+        let expectedSymbols: Set<String> = ["AAPL", "GOOG"]
+
+        #expect(store.stocks.count == 3)
+        #expect(uniqueEmittedSymbols.isSubset(of: expectedSymbols))
+        #expect(uniqueEmittedSymbols.contains("AAPL"))
+        #expect(uniqueEmittedSymbols.contains("GOOG"))
+    }
+
+    @Test
+    func testBootstrapThenStreamingUpdatesFetchedStocks() async throws {
+        service = MockStreamingService()
+        stockFetchingService = TestStockFetchingService(stocksToReturn: StockFixtures.sampleStocks)
+        store = AppStore(
+            service: service,
+            stockFetchingService: stockFetchingService,
+            initialStocks: [],
+            broadcastInterval: 1_000_000,
+            sortDebounceDuration: 0,
+            priceGenerator: { $0.price + 1 }
+        )
+
+        await store.bootstrap()
+        let originalAAPLPrice = store.stock(for: "AAPL")?.price
+        let originalGOOGPrice = store.stock(for: "GOOG")?.price
+        try? await Task.sleep(nanoseconds: 20_000_000)
+
+        let aaplChanged = store.stock(for: "AAPL")?.price != originalAAPLPrice
+        let googChanged = store.stock(for: "GOOG")?.price != originalGOOGPrice
+
+        #expect(!service.sentMessages.isEmpty)
+        #expect(aaplChanged || googChanged, "Streaming should update at least one fetched stock")
+    }
+
+    @Test
     func testStartDoesNothingIfAlreadyRunning() async throws {
         setUp()
         store.send(.start)
