@@ -12,7 +12,7 @@ struct StocksApp: App {
     
     @State private var store = AppStore(
         priceBroadcastService: PriceStreamingService(),
-        stockFetchingService: MockStockFetchingService()
+        stockFetchingService: MockFetchingService()
     )
     
     var body: some Scene {

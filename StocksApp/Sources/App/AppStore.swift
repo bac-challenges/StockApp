@@ -6,28 +6,33 @@
 //
 
 import Combine
-import Observation
 import SwiftUI
 
 @MainActor
 @Observable
 final class AppStore {
+    
     private(set) var state: StocksFeature.State
     private(set) var isBootstrapping = false
 
     @ObservationIgnored
     private let service: PriceStreamingProtocol
+    
     @ObservationIgnored
     private let stockFetchingService: StockFetchingProtocol
+    
     @ObservationIgnored
     private let broadcaster: BroadcastManager
+    
     @ObservationIgnored
     private let sortDebounceDuration: UInt64
 
     @ObservationIgnored
     private var cancellables = Set<AnyCancellable>()
+    
     @ObservationIgnored
     private var sortTask: Task<Void, Never>?
+    
     @ObservationIgnored
     private var hasBootstrapped = false
 
@@ -35,7 +40,7 @@ final class AppStore {
         priceBroadcastService: PriceStreamingProtocol,
         stockFetchingService: StockFetchingProtocol,
         initialStocks: [Stock] = [],
-        broadcastInterval: UInt64 = 2_000_000_000,
+        broadcastInterval: UInt64 = 4_000_000_000,
         sortDebounceDuration: UInt64 = 200_000_000,
         priceGenerator: @escaping (Stock) -> Double = { $0.price + Double.random(in: -5...5) }
     ) {
@@ -45,6 +50,7 @@ final class AppStore {
         self.state = StocksFeature.State(
             stocks: StockSorting.sortedStocks(initialStocks, by: .price)
         )
+        
         self.broadcaster = BroadcastManager(
             service: priceBroadcastService,
             stockLookup: { _ in nil },
@@ -60,10 +66,6 @@ final class AppStore {
         bind()
     }
 
-    var stocks: [Stock] {
-        state.stocks
-    }
-
     var isRunning: Bool {
         state.isRunning
     }
@@ -74,6 +76,10 @@ final class AppStore {
 
     func stock(for symbol: String) -> Stock? {
         state.stock(for: symbol)
+    }
+    
+    var stocks: [Stock] {
+        state.stocks
     }
 
     func send(_ action: StocksFeature.Action) {

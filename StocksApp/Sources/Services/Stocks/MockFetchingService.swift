@@ -8,7 +8,7 @@
 import Foundation
 
 @MainActor
-final class MockStockFetchingService: StockFetchingProtocol {
+final class MockFetchingService: StockFetchingProtocol {
     func fetchStocks() async throws -> [Stock] {
         try? await Task.sleep(nanoseconds: 300_000_000)
 

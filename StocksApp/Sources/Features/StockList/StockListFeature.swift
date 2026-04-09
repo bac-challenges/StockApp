@@ -6,6 +6,7 @@
 //
 
 enum StocksFeature {
+
     enum Lifecycle {
         case stopped
         case running
