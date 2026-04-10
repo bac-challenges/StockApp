@@ -23,20 +23,19 @@ struct Stock: Identifiable, Hashable {
 
     /// Difference between current and previous price, rounded to 2 decimals
     var change: Double {
-        (price - previousPrice).rounded(toPlaces: 2)
+        let priceDecimal = Decimal(string: String(price), locale: Locale(identifier: "en_US_POSIX")) ?? Decimal(price)
+        let previousPriceDecimal = Decimal(string: String(previousPrice), locale: Locale(identifier: "en_US_POSIX")) ?? Decimal(previousPrice)
+        let changeDecimal = priceDecimal - previousPriceDecimal
+
+        var roundedDecimal = Decimal()
+        var workingDecimal = changeDecimal
+        NSDecimalRound(&roundedDecimal, &workingDecimal, 2, .plain)
+        return NSDecimalNumber(decimal: roundedDecimal).doubleValue
     }
     
     /// Indicates if the stock went up or stayed flat
     var isUp: Bool {
         change >= 0
-    }
-}
-
-// MARK: - Helpers
-extension Double {
-    func rounded(toPlaces places:Int) -> Double {
-        let divisor = pow(10.0, Double(places))
-        return (self * divisor).rounded() / divisor
     }
 }
 

@@ -11,10 +11,10 @@ import Foundation
 final class BroadcastManager {
     
     private let service: PriceStreamingProtocol
-    private let stockStore: StockStoreProtocol
+    var stockLookup: (String) -> Stock?
     
     private let broadcastInterval: UInt64
-    private let symbols: [String]
+    private var symbols: [String]
     private let priceGenerator: (Stock) -> Double
     
     private var symbolIndex = 0
@@ -22,13 +22,13 @@ final class BroadcastManager {
     
     init(
         service: PriceStreamingProtocol,
-        stockStore: StockStoreProtocol,
+        stockLookup: @escaping (String) -> Stock?,
         broadcastInterval: UInt64,
         symbols: [String],
         priceGenerator: @escaping (Stock) -> Double
     ) {
         self.service = service
-        self.stockStore = stockStore
+        self.stockLookup = stockLookup
         self.broadcastInterval = broadcastInterval
         self.symbols = symbols
         self.priceGenerator = priceGenerator
@@ -52,15 +52,23 @@ final class BroadcastManager {
         task?.cancel()
         task = nil
     }
+
+    func updateSymbols(_ symbols: [String]) {
+        self.symbols = symbols
+        if symbolIndex >= symbols.count {
+            symbolIndex = 0
+        }
+    }
     
     private func broadcastNext() async {
         guard !symbols.isEmpty else { return }
         
         let symbol = symbols[symbolIndex]
-        guard let stock = stockStore.stock(for: symbol) else { return }
+        guard let stock = stockLookup(symbol) else { return }
         
         let newPrice = priceGenerator(stock)
-        guard abs(newPrice - stock.price) > 0.01 else { return }
+        let priceDelta = abs((newPrice - stock.price).rounded(toPlaces: 2))
+        guard priceDelta > 0.01 else { return }
         
         let message = PriceMessage(
             symbol: symbol,

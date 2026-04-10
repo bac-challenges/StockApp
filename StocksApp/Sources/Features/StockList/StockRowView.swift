@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StockRow: View {
+struct StockRowView: View {
     
     let stock: Stock
     
@@ -31,7 +31,7 @@ struct StockRow: View {
 }
 
 // MARK: Components
-private extension StockRow {
+private extension StockRowView {
     
     /// Stock Info
     var stockInfo: some View {

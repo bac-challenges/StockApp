@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct StockDetail: View {
+struct StockDetailView: View {
     
-    @Environment(AppState.self) private var state
+    @Environment(AppStore.self) private var store
     
     let symbol: String
     
     var stock: Stock? {
-        state.stockStore.stock(for: symbol)
+        store.stock(for: symbol)
     }
     
     var body: some View {

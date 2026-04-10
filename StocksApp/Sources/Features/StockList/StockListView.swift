@@ -7,16 +7,22 @@
 
 import SwiftUI
 
-struct StockList: View {
+struct StockListView: View {
     
-    @Environment(AppState.self) private var state
+    @Environment(AppStore.self) private var store
     
     var body: some View {
         
         NavigationStack {
-            List(state.stocks) { item in
-                NavigationLink(value: item.symbol) {
-                    StockRow(stock: item)
+            Group {
+                if store.isBootstrapping && store.stocks.isEmpty {
+                    ProgressView("Loading Stocks...")
+                } else {
+                    List(store.stocks) { item in
+                        NavigationLink(value: item.symbol) {
+                            StockRowView(stock: item)
+                        }
+                    }
                 }
             }
             .toolbar {
@@ -26,7 +32,7 @@ struct StockList: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        state.isRunning ? state.stop():state.start()
+                        store.send(.startStopButtonTapped)
                     } label: {
                         connectionControl
                     }
@@ -34,35 +40,32 @@ struct StockList: View {
             }
             .navigationTitle(.stocksKey)
             .navigationDestination(for: String.self) { symbol in
-                StockDetail(symbol: symbol)
+                StockDetailView(symbol: symbol)
             }
         }
     }
 }
 
 // MARK: Components
-private extension StockList {
+private extension StockListView {
     
     // Sorting menu
     var sortingMenu: some View {
         Menu {
-            /// Price
             Button {
-                state.stockStore.sortType = .price
+                store.send(.sortSelected(.price))
             } label: {
                 Label(.priceKey, systemImage: "dollarsign.circle")
             }
             
-            /// Change
             Button {
-                state.stockStore.sortType = .change
+                store.send(.sortSelected(.change))
             } label: {
                 Label(.changeKey, systemImage: "chart.bar.fill")
             }
             
-            /// Updated
             Button {
-                state.stockStore.sortType = .updated
+                store.send(.sortSelected(.updated))
             } label: {
                 Label(.updatedKey, systemImage: "clock.fill")
             }
@@ -76,9 +79,9 @@ private extension StockList {
     var connectionControl: some View {
         HStack(spacing: 5) {
             Circle()
-                .fill(state.connectionState == .connected ? .green : .red)
+                .fill(store.connectionState == .connected ? .green : .red)
                 .frame(width: 10, height: 10)
-            Text("\(state.isRunning ? .stopKey : .startKey)")
+            Text("\(store.isRunning ? .stopKey : .startKey)")
         }
     }
 }
